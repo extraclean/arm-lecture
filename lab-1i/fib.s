@@ -12,31 +12,25 @@ fibonacci:
 	@ ADD/MODIFY CODE BELOW
 	@ PROLOG
 	push {r3, r4, r5, lr}
-
-	@ R4 = R0 - 0 (update flags)
-	@ if(R0 <= 0) goto .L3 (which returns 0)
-
-	@ Compare R4 wtih 1
-	@ If R4 == 1 goto .L4 (which returns 1)
-
-	@ R0 = R4 - 1
-	@ Recursive call to fibonacci with R4 - 1 as parameter
-
-	@ R5 = R0
-	@ R0 = R4 - 2
-	@ Recursive call to fibonacci with R4 - 2 as parameter
-
-	@ R0 = R5 + R0 (update flags)
-
-	pop {r3, r4, r5, pc}		@EPILOG
-
-	@ END CODE MODIFICATION
-.L3:
-	mov r0, #0			@ R0 = 0
-	pop {r3, r4, r5, pc}		@ EPILOG
-
-.L4:
-	mov r0, #1			@ R0 = 1
+	@to solve the side effect of mov r3, r4 & mov r4, r5
+	mov r5, #1
+	@initial F[0] & F[1]
+	mov r4, #0
+	mov r3, #1
+while:
+	@shift the values to proceed the fibonacci calculation
+	mov r3, r4
+	mov r4, r5
+	@fibonacci calculation
+	add r5, r4, r3
+	@the counter of while
+	sub r0, #1
+	@if r0 > 1 do iterative calculation
+	cmp r0, #1
+	bgt while
+	@if r0 <= 1  terminate the loop	
+	@return r5 by r0
+	mov r0, r5
 	pop {r3, r4, r5, pc}		@ EPILOG
 
 	.size fibonacci, .-fibonacci
